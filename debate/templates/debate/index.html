@@ -1,0 +1,22 @@
+{% extends 'debate/base.html' %}
+
+{% block content %}
+
+<p>Содержимое главной страницы</p>
+
+<ul>
+    {% for d in debats %}
+    <li>
+        <h2>{{d.title}}</h2>
+        <p>{{d.content}}</p>
+        <hr>
+    </li>
+    {% if p.image %}
+        <p><img class="img-article-left thumb" src="{{d.image.url}}"></p>
+    {% endif %}
+    <p class="link-read-page"><a href="{{ d.get_absolute_url }}">Read</a></p>
+    {% endfor %}
+</ul>
+
+
+{% endblock %}

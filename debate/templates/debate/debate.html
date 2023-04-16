@@ -1,0 +1,12 @@
+{% extends 'debate/base.html' %}
+
+{% block content %}
+
+<h1>{{ debate.title }}</h1>
+
+{% if debate.image %}
+<p><img class="img-article-left" src="{{debate.image.url}}" ></p>
+{% endif %}
+
+{{debate.content|linebreaks}}
+{% endblock %}
