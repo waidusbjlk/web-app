@@ -1,14 +1,24 @@
 from django.contrib import admin
+from django.utils.safestring import mark_safe
 
 from .models import *
 
 class DebateAdmin(admin.ModelAdmin):
-    list_display = ('id', 'title', 'time_create', 'image', 'is_published')
+    list_display = ('id', 'title', 'time_create', 'get_html_image', 'is_published')
     list_display_links = ('id', 'title')
     search_fields = ('title', 'content')
     list_editable = ('is_published',)
     list_filter = ('is_published', 'time_create')
     prepopulated_fields = {"slug": ("title",)}
+    fields = ('title', 'slug', 'cat', 'content', 'image', 'get_html_image', 'is_published','time_create', 'time_update')
+    readonly_fields = ('time_create', 'time_update', 'get_html_image')
+    save_on_top = True
+
+    def get_html_image(self, object):
+        if object.image:
+            return mark_safe(f"<img src='{object.image.url}' width=50>")
+
+    get_html_image.short_description = "Фотографии"
 
 class CategoryAdmin(admin.ModelAdmin):
     list_display = ('id', 'name')
@@ -18,3 +28,6 @@ class CategoryAdmin(admin.ModelAdmin):
 
 admin.site.register(Debate, DebateAdmin)
 admin.site.register(Category, CategoryAdmin)
+
+admin.site.site_title = 'Админ-панель сайта о дебатах'
+admin.site.site_header = 'Админ-панель сайта о дебатах 2'

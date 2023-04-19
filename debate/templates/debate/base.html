@@ -11,23 +11,62 @@
 {% block mainmenu %}
 <ul>
     {% for m in menu %}
-    {% if not forloop.last %}
     <li><a href="{% url m.url_name %}">{{m.title}}</a></li>
-    {% else %}
-    <li class="last"><a href="#">{{m.title}}</a></li>
-    {% endif %}
     {% endfor %}
+    {% if request.user.is_authenticated %}
+    <li class="last"> {{ user.username}} | <a href="{% url 'logout' %}">Выйти</a> </li>
+    {% else %}
+    <a href="{% url 'register' %}">Регистрация</a> | <a href="{% url 'login' %}">Войти</a>
+    {% endif %}
 </ul>
+    <div class="clear"></div>
 {% endblock mainmenu %}
 {% if cat_selected == 0 %}
     <li class="selected">Все категории</li>
 {% else %}
     <li><a href="{% url 'home' %}">Все категории</a> </li>
 {% endif %}
-{% show_categories cat_selected=cat_selected %}
+
+{% for c in cats %}
+{% if c.debate__count > 0 %}
+    {% if c.pk == cat_selected %}
+        <li class="selected">{{c.name}}</li>
+    {% else %}
+        <li><a href="{{ c.get_absolute_url }}">{{c.name}}</a> </li>
+    {% endif %}
+{% endif %}
+{% endfor %}
 
 {% block content %}
 {% endblock %}
+{% if page_obj.has_other_pages %}
+<nav class="list-pages">
+    <ul>
+        {% if page_obj.has_previos %}
+        <li class="page-num">
+            <a href="?page={{ page_obj.previos_page_number }}">&lt;</a>
+        </li>
+        {% endif %}
+
+        {% for d in paginator.page_range %}
+        {% if page_obj.number == d %}
+            <li class="page-num page-num-selected">{{ d }}</li>
+        {% elif d >= page_obj.number|add:-2 and d <= page_obj.number|add:2 %}
+        <li class="page-num">
+            <a href="?page={{ d }}">{{ d }}</a>
+        </li>
+        {% endif %}
+        {% endfor %}
+
+        {% if page_obj.has_next %}
+        <li class="page-num">
+            <a href="?page={{ page_obj.next_page_number }}">&gt;</a>
+        </li>
+        {% endif %}
+    </ul>
+</nav>
+{% endif %}
+
 
 </body>
 </html>

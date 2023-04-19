@@ -9,7 +9,7 @@ class Debate(models.Model):
     time_create = models.DateTimeField(auto_now_add=True, verbose_name= "Зоголовок")
     time_update = models.DateTimeField(auto_now=True, verbose_name= "Зоголовок")
     is_published = models.BooleanField(default=True, verbose_name= "Зоголовок")
-    cat = models.ForeignKey('Category', on_delete=models.PROTECT, verbose_name= "Зоголовок")
+    cat = models.ForeignKey('Category', on_delete=models.PROTECT, verbose_name= "Категории")
 
     def __str__(self):
         return self.title
@@ -20,7 +20,7 @@ class Debate(models.Model):
     class Meta:
         verbose_name = "Известные женщины"
         verbose_name_plural = "Известные женщины"
-        ordering = ['-time_create', 'title']
+        ordering = ['id']
 
 class Category(models.Model):
     name = models.CharField(max_length=100, db_index=True, verbose_name="Categories")
@@ -30,7 +30,7 @@ class Category(models.Model):
         return self.name
 
     def get_absolute_url(self):
-        return reverse('category', kwargs={'cat_id': self.pk})
+        return reverse('category', kwargs={'cat_slug': self.slug})
 
     class Meta:
         verbose_name = "Categories"
